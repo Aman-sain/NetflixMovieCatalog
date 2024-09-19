@@ -1,13 +1,11 @@
 import sys
 import os
 import pytest
-from flask import Flask
-import json
+from flask import json
+import app
 
 # Add the directory containing app.py to the Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-import app  # Importing the Flask app from app.py
 
 @pytest.fixture
 def client():
@@ -16,13 +14,11 @@ def client():
     with app.app.test_client() as client:
         yield client
 
-
 def test_home(client):
     """Test the home route."""
     rv = client.get('/')
     assert rv.status_code == 200
     assert b"This app is an API" in rv.data
-
 
 def test_discover_movies(client):
     """Test the /discover route for movies."""
@@ -32,7 +28,6 @@ def test_discover_movies(client):
     assert isinstance(data, list)
     assert len(data) <= 20
 
-
 def test_discover_tv(client):
     """Test the /discover route for TV shows."""
     rv = client.get('/discover?type=tv')
@@ -40,7 +35,6 @@ def test_discover_tv(client):
     data = json.loads(rv.data)
     assert isinstance(data, list)
     assert len(data) <= 20
-
 
 def test_discover_with_genre(client):
     """Test the /discover route with a genre filter."""
@@ -53,16 +47,15 @@ def test_discover_with_genre(client):
     for item in data:
         assert 28 in item['genre_ids']
 
-
 def test_update_popularity_success(client):
     """Test the /updatePopularity route with valid data."""
-    # Replace '1' with a valid movie ID from your data
+    # Ensure there's a valid movie ID in data_movies for testing
+    # You may need to initialize your test data here if necessary
     rv = client.post('/updatePopularity', json={'movieId': '1', 'popularity': 99.5})
     assert rv.status_code == 200
     response_data = json.loads(rv.data)
     assert response_data['message'] == 'Popularity updated successfully'
     assert response_data['new_popularity'] == 99.5
-
 
 def test_update_popularity_invalid_movie(client):
     """Test the /updatePopularity route with an invalid movie ID."""
@@ -72,7 +65,6 @@ def test_update_popularity_invalid_movie(client):
     assert 'error' in response_data
     assert response_data['error'] == 'Movie Id value not provided or not found'
 
-
 def test_update_popularity_invalid_value(client):
     """Test the /updatePopularity route with an invalid popularity value."""
     rv = client.post('/updatePopularity', json={'movieId': '1', 'popularity': 'invalid_value'})
@@ -80,7 +72,6 @@ def test_update_popularity_invalid_value(client):
     response_data = json.loads(rv.data)
     assert 'error' in response_data
     assert response_data['error'] == 'Popularity value must be a float'
-
 
 def test_status(client):
     """Test the /status route."""
