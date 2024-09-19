@@ -8,7 +8,7 @@ on:
 env:
   EC2_PUBLIC_IP_1: 52.28.102.122  # Instance 1 Public IP
   EC2_PUBLIC_IP_2: 18.199.134.101  # Instance 2 Public IP
-  EC2_PUBLIC_IP_3: 3.120.233.19   # Instance 3 Public IP
+  EC2_PUBLIC_IP_3: 3.120.233.19    # Instance 3 Public IP
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # Define the SSH private key in GitHub Secrets
   DOCKER_USERNAME: amansain01  # Your Docker Hub username
   DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}  # Docker Hub access token configured in GitHub Secrets
@@ -76,8 +76,15 @@ jobs:
             sudo yum install -y docker &&
             sudo systemctl start docker &&
             sudo docker pull $DOCKER_USERNAME/netflix-movie-catalog:v0.0.1 &&
-            cd /home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog/docker-compose.yml &&  # Change this to the path where your docker-compose.yml is located
-            sudo docker-compose up -d"
+            echo 'version: \"3\"' > /home/ec2-user/docker-compose.yml &&
+            echo 'services:' >> /home/ec2-user/docker-compose.yml &&
+            echo '  backend:' >> /home/ec2-user/docker-compose.yml &&
+            echo '    image: $DOCKER_USERNAME/netflix-movie-catalog:v0.0.1' >> /home/ec2-user/docker-compose.yml &&
+            echo '    ports:' >> /home/ec2-user/docker-compose.yml &&
+            echo '      - \"8080:8080\"' >> /home/ec2-user/docker-compose.yml &&
+            echo '    environment:' >> /home/ec2-user/docker-compose.yml &&
+            echo '      - FLASK_ENV=production' >> /home/ec2-user/docker-compose.yml &&
+            sudo docker-compose -f /home/ec2-user/docker-compose.yml up -d"
 
       - name: Deploy to EC2 Instance 2
         run: |
@@ -86,8 +93,15 @@ jobs:
             sudo yum install -y docker &&
             sudo systemctl start docker &&
             sudo docker pull $DOCKER_USERNAME/netflix-movie-catalog:v0.0.1 &&
-            cd /home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog/docker-compose.yml &&  # Change this to the path where your docker-compose.yml is located
-            sudo docker-compose up -d"
+            echo 'version: \"3\"' > /home/ec2-user/docker-compose.yml &&
+            echo 'services:' >> /home/ec2-user/docker-compose.yml &&
+            echo '  backend:' >> /home/ec2-user/docker-compose.yml &&
+            echo '    image: $DOCKER_USERNAME/netflix-movie-catalog:v0.0.1' >> /home/ec2-user/docker-compose.yml &&
+            echo '    ports:' >> /home/ec2-user/docker-compose.yml &&
+            echo '      - \"8080:8080\"' >> /home/ec2-user/docker-compose.yml &&
+            echo '    environment:' >> /home/ec2-user/docker-compose.yml &&
+            echo '      - FLASK_ENV=production' >> /home/ec2-user/docker-compose.yml &&
+            sudo docker-compose -f /home/ec2-user/docker-compose.yml up -d"
 
       - name: Deploy to EC2 Instance 3
         run: |
@@ -96,5 +110,12 @@ jobs:
             sudo yum install -y docker &&
             sudo systemctl start docker &&
             sudo docker pull $DOCKER_USERNAME/netflix-movie-catalog:v0.0.1 &&
-            cd /home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog/docker-compose.yml &&  # Change this to the path where your docker-compose.yml is located
-            sudo docker-compose up -d"
+            echo 'version: \"3\"' > /home/ec2-user/docker-compose.yml &&
+            echo 'services:' >> /home/ec2-user/docker-compose.yml &&
+            echo '  backend:' >> /home/ec2-user/docker-compose.yml &&
+            echo '    image: $DOCKER_USERNAME/netflix-movie-catalog:v0.0.1' >> /home/ec2-user/docker-compose.yml &&
+            echo '    ports:' >> /home/ec2-user/docker-compose.yml &&
+            echo '      - \"8080:8080\"' >> /home/ec2-user/docker-compose.yml &&
+            echo '    environment:' >> /home/ec2-user/docker-compose.yml &&
+            echo '      - FLASK_ENV=production' >> /home/ec2-user/docker-compose.yml &&
+            sudo docker-compose -f /home/ec2-u
