@@ -8,7 +8,7 @@ on:
 env:
   EC2_PUBLIC_IP_1: 3.68.135.25  # Instance 1 Public IP
   EC2_PUBLIC_IP_2: 3.76.147.224  # Instance 2 Public IP
-  EC2_PUBLIC_IP_3: 18.153.39.26  # Instance 3 Public IP
+  EC2_PUBLIC_IP_3: 18.153.39.26   # Instance 3 Public IP
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # Define the SSH private key in GitHub Secrets
 
 jobs:
@@ -62,18 +62,12 @@ jobs:
           set -x
           echo "$SSH_PRIVATE_KEY" > aws_key.pem
           chmod 600 aws_key.pem
-          ssh -v -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_1 "mkdir -p /home/ec2-user/app/src/NetflixMovieCatalog" && \
-          scp -v -o StrictHostKeyChecking=accept-new -i aws_key.pem -r /home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog/* ec2-user@$EC2_PUBLIC_IP_1:/home/ec2-user/app/src/NetflixMovieCatalog
-          ssh -v -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_1 "bash /home/ec2-user/app/src/NetflixMovieCatalog/deploy.sh"
+          ssh -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_1 "mkdir -p /home/ec2-user/app/src/NetflixMovieCatalog && cd /home/ec2-user/app/src/NetflixMovieCatalog && git clone https://github.com/Aman-sain/NetflixMovieCatalog.git . && bash deploy.sh"
 
       - name: Deploy to EC2 Instance 2
         run: |
-          ssh -v -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_2 "mkdir -p /home/ec2-user/app/src/NetflixMovieCatalog" && \
-          scp -v -o StrictHostKeyChecking=accept-new -i aws_key.pem -r /home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog/* ec2-user@$EC2_PUBLIC_IP_2:/home/ec2-user/app/src/NetflixMovieCatalog
-          ssh -v -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_2 "bash /home/ec2-user/app/src/NetflixMovieCatalog/deploy.sh"
+          ssh -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_2 "mkdir -p /home/ec2-user/app/src/NetflixMovieCatalog && cd /home/ec2-user/app/src/NetflixMovieCatalog && git clone https://github.com/Aman-sain/NetflixMovieCatalog.git . && bash deploy.sh"
 
       - name: Deploy to EC2 Instance 3
         run: |
-          ssh -v -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_3 "mkdir -p /home/ec2-user/app/src/NetflixMovieCatalog" && \
-          scp -v -o StrictHostKeyChecking=accept-new -i aws_key.pem -r /home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog/* ec2-user@$EC2_PUBLIC_IP_3:/home/ec2-user/app/src/NetflixMovieCatalog
-          ssh -v -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_3 "bash /home/ec2-user/app/src/NetflixMovieCatalog/deploy.sh"
+          ssh -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_3 "mkdir -p /home/ec2-user/app/src/NetflixMovieCatalog && cd /home/ec2-user/app/src/NetflixMovieCatalog && git clone https://github.com/Aman-sain/NetflixMovieCatalog.git . && bash deploy.sh"
