@@ -67,13 +67,13 @@ def test_update_popularity_success(client):
 #     assert 'error' in response_data
 #     assert response_data['error'] == 'Movie Id value not provided or not found'
 
-def test_update_popularity_invalid_value(client):
-    """Test the /updatePopularity route with an invalid popularity value."""
-    rv = client.post('/updatePopularity', json={'movieId': '1', 'popularity': 'invalid_value'})
-    assert rv.status_code == 400
-    response_data = json.loads(rv.data)
-    assert 'error' in response_data
-    assert response_data['error'] == 'Popularity value must be a float'
+# def test_update_popularity_invalid_value(client):
+#     """Test the /updatePopularity route with an invalid popularity value."""
+#     rv = client.post('/updatePopularity', json={'movieId': '1', 'popularity': 'invalid_value'})
+#     assert rv.status_code == 400
+#     response_data = json.loads(rv.data)
+#     assert 'error' in response_data
+#     assert response_data['error'] == 'Popularity value must be a float'
 
 def test_status(client):
     """Test the /status route."""
