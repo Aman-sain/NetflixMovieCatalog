@@ -1,14 +1,19 @@
+import sys
+import os
 import pytest
 from flask import Flask
 import json
-from app import app  # Assuming your main Flask app is in a file called 'app.py'
 
+# Add the directory containing app.py to the Python path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+import app  # Importing the Flask app from app.py
 
 @pytest.fixture
 def client():
     # Create a test client using the Flask application
-    app.config['TESTING'] = True
-    with app.test_client() as client:
+    app.app.config['TESTING'] = True
+    with app.app.test_client() as client:
         yield client
 
 
