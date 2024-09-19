@@ -59,6 +59,7 @@ jobs:
       # Step 4: SSH to the Backend EC2 instances and deploy the backend
       - name: Deploy to EC2 Instance 1
         run: |
+        
           set -x
           echo "$SSH_PRIVATE_KEY" > aws_key.pem
           chmod 600 aws_key.pem
