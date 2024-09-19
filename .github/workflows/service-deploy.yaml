@@ -6,9 +6,9 @@ on:
       - main
 
 env:
-  EC2_PUBLIC_IP_1: 3.68.135.25  # Instance 1 Public IP
-  EC2_PUBLIC_IP_2: 3.76.147.224  # Instance 2 Public IP
-  EC2_PUBLIC_IP_3: 18.153.39.26   # Instance 3 Public IP
+  EC2_PUBLIC_IP_1: 3.67.90.106  # Instance 1 Public IP
+  EC2_PUBLIC_IP_2: 52.57.38.68  # Instance 2 Public IP
+  EC2_PUBLIC_IP_3: 18.185.7.85   # Instance 3 Public IP
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # Define the SSH private key in GitHub Secrets
 
 jobs:
@@ -51,11 +51,7 @@ jobs:
         run: |
           cd /home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog/
           docker build -t netflix-backend:latest .
-<<<<<<< HEAD
           
-=======
-
->>>>>>> parent of 423518b (rerun service)
       # Step 4: Tag and Push Docker image
       - name: Tag and Push Docker image
         run: |
@@ -89,5 +85,4 @@ jobs:
             sudo yum install -y docker &&
             sudo systemctl start docker &&
             sudo docker pull amansain01/netflix-movie-catalog:v0.0.1 &&
-            sudo docker run -d --name netflix-backend -p 80:80 amansain01/netflix-movie-catalog:v0.0.1"
-rerun service · Aman-sain/NetflixMovieCatalog@423518b   
+            sudo docker run -d --name netflix-backend -p 8080:8080 amansain01/netflix-movie-catalog:v0.0.1"
