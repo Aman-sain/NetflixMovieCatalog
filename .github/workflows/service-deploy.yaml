@@ -44,7 +44,7 @@ jobs:
       # Step 2: Run Backend Tests
       - name: Run Backend Tests
         run: |
-      
+          find ~/  | grep NetflixMovieCatalog
           cd ~/NetflixMovieCatalog
           python3 -m venv venv
           source venv/bin/activate
