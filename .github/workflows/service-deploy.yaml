@@ -10,6 +10,8 @@ env:
   EC2_PUBLIC_IP_2: 3.76.147.224  # Instance 2 Public IP
   EC2_PUBLIC_IP_3: 18.153.39.26   # Instance 3 Public IP
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # Define the SSH private key in GitHub Secrets
+  DOCKER_USERNAME: amansain01  # Your Docker Hub username
+  DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}  # Define the Docker access token in GitHub Secrets
 
 jobs:
   Deploy-Backend:
@@ -23,23 +25,12 @@ jobs:
       - name: Set up Docker
         run: |
           echo "Updating package list..."
-          sudo apt-get update
+          sudo yum update -y
           echo "Installing necessary dependencies..."
-          sudo apt-get install -y ca-certificates curl gnupg lsb-release || { echo "Failed to install dependencies. Exiting."; exit 1; }
-          
-          echo "Adding Docker's official GPG key..."
-          sudo mkdir -p /etc/apt/keyrings
-          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo tee /etc/apt/keyrings/docker.asc > /dev/null
-          sudo chmod a+r /etc/apt/keyrings/docker.asc
-          
-          echo "Adding Docker repository..."
-          echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-          echo "Updating package index again..."
-          sudo apt-get update || { echo "Failed to update package index. Exiting."; exit 1; }
-
-          echo "Installing Docker and Docker Compose..."
-          sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin || { echo "Failed to install Docker. Exiting."; exit 1; }
+          sudo yum install -y amazon-linux-extras
+          sudo amazon-linux-extras install docker -y
+          sudo systemctl start docker
+          sudo systemctl enable docker
 
       # Step 2: Run Backend Tests
       - name: Run Backend Tests
@@ -56,18 +47,25 @@ jobs:
           cd /home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog/
           docker build -t netflix-backend:latest .
 
-      # Step 4: SSH to the Backend EC2 instances and deploy the backend
+      # Step 4: Tag and Push Docker image
+      - name: Tag and Push Docker image
+        run: |
+          docker tag netflix-backend:latest amansain01/netflix-movie-catalog:v0.0.1
+          echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u $DOCKER_USERNAME --password-stdin
+          docker push amansain01/netflix-movie-catalog:v0.0.1
+
+      # Step 5: SSH to the Backend EC2 instances and deploy the backend
       - name: Deploy to EC2 Instance 1
         run: |
           set -x
           echo "$SSH_PRIVATE_KEY" > aws_key.pem
           chmod 600 aws_key.pem
-          ssh -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_1 "sudo apt-get update && sudo apt-get install -y git && mkdir -p /home/ec2-user/app/src/NetflixMovieCatalog && cd /home/ec2-user/app/src/NetflixMovieCatalog && git clone https://github.com/Aman-sain/NetflixMovieCatalog.git . && bash deploy.sh"
+          ssh -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_1 "sudo yum update -y && sudo yum install -y docker && sudo systemctl start docker && sudo docker pull amansain01/netflix-movie-catalog:v0.0.1 && bash deploy.sh"
 
       - name: Deploy to EC2 Instance 2
         run: |
-          ssh -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_2 "sudo apt-get update && sudo apt-get install -y git && mkdir -p /home/ec2-user/app/src/NetflixMovieCatalog && cd /home/ec2-user/app/src/NetflixMovieCatalog && git clone https://github.com/Aman-sain/NetflixMovieCatalog.git . && bash deploy.sh"
+          ssh -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_2 "sudo yum update -y && sudo yum install -y docker && sudo systemctl start docker && sudo docker pull amansain01/netflix-movie-catalog:v0.0.1 && bash deploy.sh"
 
       - name: Deploy to EC2 Instance 3
         run: |
-          ssh -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_3 "sudo apt-get update && sudo apt-get install -y git && mkdir -p /home/ec2-user/app/src/NetflixMovieCatalog && cd /home/ec2-user/app/src/NetflixMovieCatalog && git clone https://github.com/Aman-sain/NetflixMovieCatalog.git . && bash deploy.sh"
+          ssh -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_3 "sudo yum update -y && sudo yum install -y docker && sudo systemctl start docker && sudo docker pull amansain01/netflix-movie-catalog:v0.0.1 && bash deploy.sh"
