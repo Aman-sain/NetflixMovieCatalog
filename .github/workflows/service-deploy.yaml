@@ -6,9 +6,9 @@ on:
       - main
 
 env:
-  EC2_PUBLIC_IP_1: 3.68.135.25  # Instance 1 Public IP
-  EC2_PUBLIC_IP_2: 3.76.147.224  # Instance 2 Public IP
-  EC2_PUBLIC_IP_3: 18.153.39.26   # Instance 3 Public IP
+  EC2_PUBLIC_IP_1: 52.28.102.122  # Instance 1 Public IP
+  EC2_PUBLIC_IP_2: 18.199.134.101  # Instance 2 Public IP
+  EC2_PUBLIC_IP_3: 3.120.233.19   # Instance 3 Public IP
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # Define the SSH private key in GitHub Secrets
   DOCKER_USERNAME: amansain01  # Your Docker Hub username
   DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}  # Docker Hub access token configured in GitHub Secrets
