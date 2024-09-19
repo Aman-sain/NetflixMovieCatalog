@@ -10,6 +10,8 @@ env:
   EC2_PUBLIC_IP_2: 3.76.147.224  # Instance 2 Public IP
   EC2_PUBLIC_IP_3: 18.153.39.26   # Instance 3 Public IP
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # Define the SSH private key in GitHub Secrets
+  DOCKER_USERNAME: amansain01  # Your Docker Hub username
+  DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}  # Docker Hub access token configured in GitHub Secrets
 
 jobs:
   Deploy-Backend:
@@ -56,15 +58,14 @@ jobs:
           cd /home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog/
           docker build -t netflix-backend:latest .
 
-          
       # Step 4: Tag and Push Docker image
       - name: Tag and Push Docker image
         run: |
-          docker tag netflix-backend:latest amansain01/netflix-movie-catalog:v0.0.1
-          echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u amansain01 --password-stdin
-          docker push amansain01/netflix-movie-catalog:v0.0.1
+          docker tag netflix-backend:latest $DOCKER_USERNAME/netflix-movie-catalog:v0.0.1
+          echo "$DOCKER_TOKEN" | docker login -u $DOCKER_USERNAME --password-stdin
+          docker push $DOCKER_USERNAME/netflix-movie-catalog:v0.0.1
 
-      # Step 5: SSH to the Backend EC2 instances and deploy the backend
+      # Step 5: SSH to the Backend EC2 instances and deploy the backend using Docker Compose
       - name: Deploy to EC2 Instance 1
         run: |
           set -x
@@ -74,8 +75,9 @@ jobs:
             sudo yum update -y &&
             sudo yum install -y docker &&
             sudo systemctl start docker &&
-            sudo docker pull amansain01/netflix-movie-catalog:v0.0.1 &&
-            sudo docker run -d --name netflix-backend -p 80:80 amansain01/netflix-movie-catalog:v0.0.1"
+            sudo docker pull $DOCKER_USERNAME/netflix-movie-catalog:v0.0.1 &&
+            cd /home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog/docker-compose.yml &&  # Change this to the path where your docker-compose.yml is located
+            sudo docker-compose up -d"
 
       - name: Deploy to EC2 Instance 2
         run: |
@@ -83,8 +85,9 @@ jobs:
             sudo yum update -y &&
             sudo yum install -y docker &&
             sudo systemctl start docker &&
-            sudo docker pull amansain01/netflix-movie-catalog:v0.0.1 &&
-            sudo docker run -d --name netflix-backend -p 80:80 amansain01/netflix-movie-catalog:v0.0.1"
+            sudo docker pull $DOCKER_USERNAME/netflix-movie-catalog:v0.0.1 &&
+            cd /home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog/docker-compose.yml &&  # Change this to the path where your docker-compose.yml is located
+            sudo docker-compose up -d"
 
       - name: Deploy to EC2 Instance 3
         run: |
@@ -92,5 +95,6 @@ jobs:
             sudo yum update -y &&
             sudo yum install -y docker &&
             sudo systemctl start docker &&
-            sudo docker pull amansain01/netflix-movie-catalog:v0.0.1 &&
-            sudo docker run -d --name netflix-backend -p 80:80 amansain01/netflix-movie-catalog:v0.0.1"
+            sudo docker pull $DOCKER_USERNAME/netflix-movie-catalog:v0.0.1 &&
+            cd /home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog/docker-compose.yml &&  # Change this to the path where your docker-compose.yml is located
+            sudo docker-compose up -d"
