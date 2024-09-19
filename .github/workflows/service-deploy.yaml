@@ -51,7 +51,11 @@ jobs:
         run: |
           cd /home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog/
           docker build -t netflix-backend:latest .
+<<<<<<< HEAD
           
+=======
+
+>>>>>>> parent of 423518b (rerun service)
       # Step 4: Tag and Push Docker image
       - name: Tag and Push Docker image
         run: |
