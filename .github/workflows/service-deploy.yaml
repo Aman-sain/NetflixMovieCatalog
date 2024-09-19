@@ -84,7 +84,7 @@ jobs:
             echo '      - \"8080:8080\"' >> /home/ec2-user/docker-compose.yml &&
             echo '    environment:' >> /home/ec2-user/docker-compose.yml &&
             echo '      - FLASK_ENV=production' >> /home/ec2-user/docker-compose.yml &&
-            sudo docker-compose -f /home/ec2-user/docker-compose.yml up -d"
+             sudo docker compose -f /home/ec2-user/docker-compose.yml up -d
 
       - name: Deploy to EC2 Instance 2
         run: |
@@ -118,4 +118,5 @@ jobs:
             echo '      - \"8080:8080\"' >> /home/ec2-user/docker-compose.yml &&
             echo '    environment:' >> /home/ec2-user/docker-compose.yml &&
             echo '      - FLASK_ENV=production' >> /home/ec2-user/docker-compose.yml &&
-            sudo docker-compose -f /home/ec2-u
+            sudo docker compose -f /home/ec2-user/docker-compose.yml up -d
+
