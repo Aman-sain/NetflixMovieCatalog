@@ -61,19 +61,18 @@ jobs:
         run: |
           echo "$SSH_PRIVATE_KEY" > aws_key.pem
           chmod 600 aws_key.pem
-          ssh -o StrictHostKeyChecking=no -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_1 "mkdir -p /home/ec2-user/app/src/NetflixMovieCatalog" && \
-          scp -o StrictHostKeyChecking=no -i aws_key.pem -r /home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog/* ec2-user@$EC2_PUBLIC_IP_1:/home/ec2-user/app/src/NetflixMovieCatalog
-          ssh -o StrictHostKeyChecking=no -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_1 "bash /home/ec2-user/app/src/NetflixMovieCatalog/deploy.sh"
+          ssh -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_1 "mkdir -p /home/ec2-user/app/src/NetflixMovieCatalog" && \
+          scp -o StrictHostKeyChecking=accept-new -i aws_key.pem -r /home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog/* ec2-user@$EC2_PUBLIC_IP_1:/home/ec2-user/app/src/NetflixMovieCatalog
+          ssh -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_1 "bash /home/ec2-user/app/src/NetflixMovieCatalog/deploy.sh"
 
       - name: Deploy to EC2 Instance 2
         run: |
-          ssh -o StrictHostKeyChecking=no -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_2 "mkdir -p /home/ec2-user/app/src/NetflixMovieCatalog" && \
-          scp -o StrictHostKeyChecking=no -i aws_key.pem -r /home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog/* ec2-user@$EC2_PUBLIC_IP_2:/home/ec2-user/app/src/NetflixMovieCatalog
-          ssh -o StrictHostKeyChecking=no -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_2 "bash /home/ec2-user/app/src/NetflixMovieCatalog/deploy.sh"
+          ssh -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_2 "mkdir -p /home/ec2-user/app/src/NetflixMovieCatalog" && \
+          scp -o StrictHostKeyChecking=accept-new -i aws_key.pem -r /home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog/* ec2-user@$EC2_PUBLIC_IP_2:/home/ec2-user/app/src/NetflixMovieCatalog
+          ssh -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_2 "bash /home/ec2-user/app/src/NetflixMovieCatalog/deploy.sh"
 
       - name: Deploy to EC2 Instance 3
         run: |
-
-          ssh -o StrictHostKeyChecking=no -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_3 "mkdir -p /home/ec2-user/app/src/NetflixMovieCatalog" && \
-          scp -o StrictHostKeyChecking=no -i aws_key.pem -r /home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog/* ec2-user@$EC2_PUBLIC_IP_3:/home/ec2-user/app/src/NetflixMovieCatalog
-          ssh -o StrictHostKeyChecking=no -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_3 "bash /home/ec2-user/app/src/NetflixMovieCatalog/deploy.sh"
+          ssh -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_3 "mkdir -p /home/ec2-user/app/src/NetflixMovieCatalog" && \
+          scp -o StrictHostKeyChecking=accept-new -i aws_key.pem -r /home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog/* ec2-user@$EC2_PUBLIC_IP_3:/home/ec2-user/app/src/NetflixMovieCatalog
+          ssh -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_3 "bash /home/ec2-user/app/src/NetflixMovieCatalog/deploy.sh"
