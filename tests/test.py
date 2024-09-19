@@ -1,7 +1,9 @@
 import sys
 import os
+sys.path.insert(0, '/home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog')
 import pytest
 from flask import json
+
 import app
 
 # Add the directory containing app.py to the Python path
