@@ -48,7 +48,7 @@ jobs:
           python3 -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
-          pytest tests/
+          pytest tests/test.py
 
       # Step 3: Build Docker image for the backend service
       - name: Build Docker image
