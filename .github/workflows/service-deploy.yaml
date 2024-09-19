@@ -71,5 +71,6 @@ jobs:
 
       - name: Deploy to EC2 Instance 3
         run: |
+        
           scp -o StrictHostKeyChecking=no -i aws_key.pem -r /home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog/* ec2-user@$EC2_PUBLIC_IP_3:/home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog/
           ssh -o StrictHostKeyChecking=no -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_3 "bash /home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog/deploy.sh"
