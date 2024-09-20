@@ -1,88 +1,88 @@
-name: Netflix Backend Service Deployment
+  name: Netflix Backend Service Deployment
 
-on:
-  push:
-    branches:
-      - main
+  on:
+    push:
+      branches:
+        - main
 
-env:
-  EC2_PUBLIC_IP_1: 18.158.60.130  # Instance 1 Public IP
-  EC2_PUBLIC_IP_2: 3.74.152.148 # Instance 2 Public IP
-  EC2_PUBLIC_IP_3: 35.159.9.12   # Instance 3 Public IP
-  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # Define the SSH private key in GitHub Secrets
+  env:
+    EC2_PUBLIC_IP_1: 18.199.191.210 # Instance 1 Public IP
+    EC2_PUBLIC_IP_2: 3.126.246.114 # Instance 2 Public IP
+    EC2_PUBLIC_IP_3: 35.159.60.165  # Instance 3 Public IP
+    SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # Define the SSH private key in GitHub Secrets
 
-jobs:
-  Deploy-Backend:
-    name: Deploy Backend to EC2 Instances
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout the backend code
-        uses: actions/checkout@v2
+  jobs:
+    Deploy-Backend:
+      name: Deploy Backend to EC2 Instances
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout the backend code
+          uses: actions/checkout@v2
 
-      # Step 1: Set up Docker
-      - name: Set up Docker
-        run: |
-          echo "Updating package list..."
-          sudo apt-get update
-          echo "Installing necessary dependencies..."
-          sudo apt-get install -y ca-certificates curl gnupg lsb-release || { echo "Failed to install dependencies. Exiting."; exit 1; }
-          
-          echo "Adding Docker's official GPG key..."
-          sudo mkdir -p /etc/apt/keyrings
-          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo tee /etc/apt/keyrings/docker.asc > /dev/null
-          sudo chmod a+r /etc/apt/keyrings/docker.asc
-          
-          echo "Adding Docker repository..."
-          echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-          echo "Updating package index again..."
-          sudo apt-get update || { echo "Failed to update package index. Exiting."; exit 1; }
-          echo "Installing Docker and Docker Compose..."
-          sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin || { echo "Failed to install Docker. Exiting."; exit 1; }
-      # Step 2: Run Backend Tests
-      - name: Run Backend Tests
-        run: |
-          cd /home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog/
-          python3 -m venv venv
-          source venv/bin/activate
-          pip install -r requirements.txt
-          pytest tests/test.py
-      # Step 3: Build Docker image for the backend service
-      - name: Build Docker image
-        run: |
-          cd /home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog/
-          docker build -t netflix-backend:latest .
-          
-      # Step 4: Tag and Push Docker image
-      - name: Tag and Push Docker image
-        run: |
-          docker tag netflix-backend:latest amansain01/netflix-movie-catalog:v0.0.1
-          echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u amansain01 --password-stdin
-          docker push amansain01/netflix-movie-catalog:v0.0.1
-      # Step 5: SSH to the Backend EC2 instances and deploy the backend
-      - name: Deploy to EC2 Instance 1
-        run: |
-          set -x
-          echo "$SSH_PRIVATE_KEY" > aws_key.pem
-          chmod 600 aws_key.pem
-          ssh -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_1 "
-            sudo yum update -y &&
-            sudo yum install -y docker &&
-            sudo systemctl start docker &&
-            sudo docker pull amansain01/netflix-movie-catalog:v0.0.1 &&
-            sudo docker run -d --name netflix-backend -p 8080:8080 amansain01/netflix-movie-catalog:v0.0.1"
-      - name: Deploy to EC2 Instance 2
-        run: |
-          ssh -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_2 "
-            sudo yum update -y &&
-            sudo yum install -y docker &&
-            sudo systemctl start docker &&
-            sudo docker pull amansain01/netflix-movie-catalog:v0.0.1 &&
-            sudo docker run -d --name netflix-backend -p 8080:8080 amansain01/netflix-movie-catalog:v0.0.1"
-      - name: Deploy to EC2 Instance 3
-        run: |
-          ssh -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_3 "
-            sudo yum update -y &&
-            sudo yum install -y docker &&
-            sudo systemctl start docker &&
-            sudo docker pull amansain01/netflix-movie-catalog:v0.0.1 &&
-            sudo docker run -d --name netflix-backend -p 8080:8080 amansain01/netflix-movie-catalog:v0.0.1"
+        # Step 1: Set up Docker
+        - name: Set up Docker
+          run: |
+            echo "Updating package list..."
+            sudo apt-get update
+            echo "Installing necessary dependencies..."
+            sudo apt-get install -y ca-certificates curl gnupg lsb-release || { echo "Failed to install dependencies. Exiting."; exit 1; }
+            
+            echo "Adding Docker's official GPG key..."
+            sudo mkdir -p /etc/apt/keyrings
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo tee /etc/apt/keyrings/docker.asc > /dev/null
+            sudo chmod a+r /etc/apt/keyrings/docker.asc
+            
+            echo "Adding Docker repository..."
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+            echo "Updating package index again..."
+            sudo apt-get update || { echo "Failed to update package index. Exiting."; exit 1; }
+            echo "Installing Docker and Docker Compose..."
+            sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin || { echo "Failed to install Docker. Exiting."; exit 1; }
+        # Step 2: Run Backend Tests
+        - name: Run Backend Tests
+          run: |
+            cd /home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog/
+            python3 -m venv venv
+            source venv/bin/activate
+            pip install -r requirements.txt
+            pytest tests/test.py
+        # Step 3: Build Docker image for the backend service
+        - name: Build Docker image
+          run: |
+            cd /home/runner/work/NetflixMovieCatalog/NetflixMovieCatalog/
+            docker build -t netflix-backend:latest .
+            
+        # Step 4: Tag and Push Docker image
+        - name: Tag and Push Docker image
+          run: |
+            docker tag netflix-backend:latest amansain01/netflix-movie-catalog:v0.0.1
+            echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u amansain01 --password-stdin
+            docker push amansain01/netflix-movie-catalog:v0.0.1
+        # Step 5: SSH to the Backend EC2 instances and deploy the backend
+        - name: Deploy to EC2 Instance 1
+          run: |
+            set -x
+            echo "$SSH_PRIVATE_KEY" > aws_key.pem
+            chmod 600 aws_key.pem
+            ssh -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_1 "
+              sudo yum update -y &&
+              sudo yum install -y docker &&
+              sudo systemctl start docker &&
+              sudo docker pull amansain01/netflix-movie-catalog:v0.0.1 &&
+              sudo docker run -d --name netflix-backend -p 8080:8080 amansain01/netflix-movie-catalog:v0.0.1"
+        - name: Deploy to EC2 Instance 2
+          run: |
+            ssh -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_2 "
+              sudo yum update -y &&
+              sudo yum install -y docker &&
+              sudo systemctl start docker &&
+              sudo docker pull amansain01/netflix-movie-catalog:v0.0.1 &&
+              sudo docker run -d --name netflix-backend -p 8080:8080 amansain01/netflix-movie-catalog:v0.0.1"
+        - name: Deploy to EC2 Instance 3
+          run: |
+            ssh -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_3 "
+              sudo yum update -y &&
+              sudo yum install -y docker &&
+              sudo systemctl start docker &&
+              sudo docker pull amansain01/netflix-movie-catalog:v0.0.1 &&
+              sudo docker run -d --name netflix-backend -p 8080:8080 amansain01/netflix-movie-catalog:v0.0.1"
