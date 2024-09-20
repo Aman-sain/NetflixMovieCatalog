@@ -69,7 +69,7 @@ jobs:
             sudo yum install -y docker &&
             sudo systemctl start docker &&
             sudo docker pull amansain01/netflix-movie-catalog:v0.0.1 &&
-            sudo docker run -d --name netflix-backend -p 80:80 amansain01/netflix-movie-catalog:v0.0.1"
+            sudo docker run -d --name netflix-backend -p 8080:8080 amansain01/netflix-movie-catalog:v0.0.1"
       - name: Deploy to EC2 Instance 2
         run: |
           ssh -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_2 "
@@ -77,7 +77,7 @@ jobs:
             sudo yum install -y docker &&
             sudo systemctl start docker &&
             sudo docker pull amansain01/netflix-movie-catalog:v0.0.1 &&
-            sudo docker run -d --name netflix-backend -p 80:80 amansain01/netflix-movie-catalog:v0.0.1"
+            sudo docker run -d --name netflix-backend -p 8080:8080 amansain01/netflix-movie-catalog:v0.0.1"
       - name: Deploy to EC2 Instance 3
         run: |
           ssh -o StrictHostKeyChecking=accept-new -i aws_key.pem ec2-user@$EC2_PUBLIC_IP_3 "
